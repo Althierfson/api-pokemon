@@ -1,7 +1,7 @@
 package com.pokemonreview.api.service;
 
 import com.pokemonreview.api.dto.PokemonDto;
-import com.pokemonreview.api.dto.PokemonResponse;
+import com.pokemonreview.api.dto.PaginationResponse;
 import com.pokemonreview.api.models.Pokemon;
 import com.pokemonreview.api.repository.PokemonRepository;
 import com.pokemonreview.api.service.impl.PokemonServiceImpl;
@@ -50,7 +50,7 @@ public class PokemonServiceTests {
 
         when(pokemonRepository.findAll(Mockito.any(Pageable.class))).thenReturn(pokemons);
 
-        PokemonResponse savePokemon = pokemonService.getAllPokemon(1,10);
+        PaginationResponse savePokemon = pokemonService.getAllPokemon(1,10);
 
         Assertions.assertThat(savePokemon).isNotNull();
     }

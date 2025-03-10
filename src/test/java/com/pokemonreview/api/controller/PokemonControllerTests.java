@@ -3,7 +3,7 @@ package com.pokemonreview.api.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pokemonreview.api.controllers.PokemonController;
 import com.pokemonreview.api.dto.PokemonDto;
-import com.pokemonreview.api.dto.PokemonResponse;
+import com.pokemonreview.api.dto.PaginationResponse;
 import com.pokemonreview.api.dto.ReviewDto;
 import com.pokemonreview.api.models.Pokemon;
 import com.pokemonreview.api.models.Review;
@@ -71,7 +71,7 @@ public class PokemonControllerTests {
 
     @Test
     public void PokemonController_GetAllPokemon_ReturnResponseDto() throws Exception {
-        PokemonResponse responseDto = PokemonResponse.builder().pageSize(10).last(true).pageNo(1).content(Arrays.asList(pokemonDto)).build();
+        PaginationResponse responseDto = PaginationResponse.builder().pageSize(10).last(true).pageNo(1).content(Arrays.asList(pokemonDto)).build();
         when(pokemonService.getAllPokemon(1,10)).thenReturn(responseDto);
 
         ResultActions response = mockMvc.perform(get("/api/pokemon")

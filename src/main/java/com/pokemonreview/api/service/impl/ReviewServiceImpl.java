@@ -3,11 +3,11 @@ package com.pokemonreview.api.service.impl;
 import com.pokemonreview.api.dto.ReviewDto;
 import com.pokemonreview.api.exceptions.PokemonNotFoundException;
 import com.pokemonreview.api.exceptions.ReviewNotFoundException;
+import com.pokemonreview.api.exceptions.ReviewWithMoreThenFiveStart;
 import com.pokemonreview.api.models.Pokemon;
 import com.pokemonreview.api.models.Review;
 import com.pokemonreview.api.repository.PokemonRepository;
 import com.pokemonreview.api.repository.ReviewRepository;
-import com.pokemonreview.api.service.PokemonService;
 import com.pokemonreview.api.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,17 +17,16 @@ import java.util.stream.Collectors;
 
 @Service
 public class ReviewServiceImpl implements ReviewService {
-    private ReviewRepository reviewRepository;
-    private PokemonRepository pokemonRepository;
-
     @Autowired
-    public ReviewServiceImpl(ReviewRepository reviewRepository, PokemonRepository pokemonRepository) {
-        this.reviewRepository = reviewRepository;
-        this.pokemonRepository = pokemonRepository;
-    }
+    private ReviewRepository reviewRepository;
+    @Autowired
+    private PokemonRepository pokemonRepository;
 
     @Override
     public ReviewDto createReview(int pokemonId, ReviewDto reviewDto) {
+        if (reviewDto.getStars() > 5 || reviewDto.getStars() < 1) {
+            throw new ReviewWithMoreThenFiveStart();
+        }
         Review review = mapToEntity(reviewDto);
 
         Pokemon pokemon = pokemonRepository.findById(pokemonId).orElseThrow(() -> new PokemonNotFoundException("Pokemon with associated review not found"));
