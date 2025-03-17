@@ -5,3 +5,4 @@ Este projeto foi originalmente baseado no [Projeto Original](https://github.com/
 ## Alterações e Melhorias (até agora)
 - Pokemons podem ter mais de um tipo
 - Organização do codigo / resolução de warnnings
+- Migração para o Spring Boot do 2.7.4 para 3.4.3
