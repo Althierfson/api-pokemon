@@ -7,9 +7,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-import javax.persistence.*;
-
 import com.pokemonreview.api.models.relationships.PokemonPokemonType;
+
+import jakarta.persistence.*;
 
 @Data
 @AllArgsConstructor

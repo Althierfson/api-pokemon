@@ -5,9 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
-
 import com.pokemonreview.api.models.relationships.PokemonPokemonType;
+
+import jakarta.persistence.*;
 
 import java.util.List;
 

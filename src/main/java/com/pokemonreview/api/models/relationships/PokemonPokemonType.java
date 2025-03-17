@@ -5,10 +5,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
-
 import com.pokemonreview.api.models.Pokemon;
 import com.pokemonreview.api.models.PokemonType;
+
+import jakarta.persistence.*;
 
 @Data
 @AllArgsConstructor
