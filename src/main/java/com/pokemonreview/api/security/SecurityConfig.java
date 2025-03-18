@@ -3,6 +3,7 @@ package com.pokemonreview.api.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -24,20 +25,6 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        // http
-        //         .csrf().disable()
-        //         .exceptionHandling()
-        //         .authenticationEntryPoint(authEntryPoint)
-        //         .and()
-        //         .sessionManagement()
-        //         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        //         .and()
-        //         .authorizeRequests()
-        //         .antMatchers("/api/auth/**").permitAll()
-        //         .antMatchers("/swagger-ui/").permitAll()
-        //         .anyRequest().authenticated()
-        //         .and()
-        //         .httpBasic();
         http.csrf(csrf -> csrf.disable())  // Desativa CSRF de maneira mais explícita no Spring Security 6
         .exceptionHandling(exception -> 
             exception.authenticationEntryPoint(authEntryPoint))
@@ -48,7 +35,16 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/swagger-ui/**").permitAll()
                 .requestMatchers("/v3/api-docs/**").permitAll()
-                // .requestMatchers("/api/**").authenticated()
+                
+                // pokemon
+                .requestMatchers(HttpMethod.POST, "/api/pokemon").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/pokemon").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/pokemon").hasRole("ADMIN")
+                // types
+                .requestMatchers(HttpMethod.POST, "/api/types").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/types").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/types").hasRole("ADMIN")
+
                 .anyRequest().authenticated())
         .httpBasic(Customizer.withDefaults()); 
 
