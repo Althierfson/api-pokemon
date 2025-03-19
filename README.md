@@ -7,3 +7,4 @@ Este projeto foi originalmente baseado no [Projeto Original](https://github.com/
 - Organização do codigo / resolução de warnnings
 - Migração para o Spring Boot do 2.7.4 para 3.4.3
 - Adicionado swagger para documentação
+- Adiciona controle de acesso a rotas por função (Admin, user)

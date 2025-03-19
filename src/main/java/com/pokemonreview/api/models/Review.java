@@ -24,4 +24,8 @@ public class Review {
     @JoinColumn(name = "pokemon_id")
     private Pokemon pokemon;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserEntity user;
+
 }

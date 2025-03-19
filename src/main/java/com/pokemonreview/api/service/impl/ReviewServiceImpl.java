@@ -6,21 +6,27 @@ import com.pokemonreview.api.exceptions.ReviewNotFoundException;
 import com.pokemonreview.api.exceptions.ReviewWithMoreThenFiveStart;
 import com.pokemonreview.api.models.Pokemon;
 import com.pokemonreview.api.models.Review;
+import com.pokemonreview.api.models.UserEntity;
 import com.pokemonreview.api.repository.PokemonRepository;
 import com.pokemonreview.api.repository.ReviewRepository;
+import com.pokemonreview.api.service.AuthService;
 import com.pokemonreview.api.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class ReviewServiceImpl implements ReviewService {
+
     @Autowired
     private ReviewRepository reviewRepository;
     @Autowired
     private PokemonRepository pokemonRepository;
+    @Autowired
+    private AuthService authService;
 
     @Override
     public ReviewDto createReview(int pokemonId, ReviewDto reviewDto) {
@@ -29,9 +35,13 @@ public class ReviewServiceImpl implements ReviewService {
         }
         Review review = mapToEntity(reviewDto);
 
-        Pokemon pokemon = pokemonRepository.findById(pokemonId).orElseThrow(() -> new PokemonNotFoundException("Pokemon with associated review not found"));
+        Pokemon pokemon = pokemonRepository.findById(pokemonId)
+            .orElseThrow(() -> new PokemonNotFoundException("Pokemon with associated review not found"));
+        
+        UserEntity user = authService.getAuthenticatedUserId();
 
         review.setPokemon(pokemon);
+        review.setUser(user);
 
         Review newReview = reviewRepository.save(review);
 
@@ -59,13 +69,14 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public ReviewDto updateReview(int pokemonId, int reviewId, ReviewDto reviewDto) {
-        Pokemon pokemon = pokemonRepository.findById(pokemonId).orElseThrow(() -> new PokemonNotFoundException("Pokemon with associated review not found"));
+    public ReviewDto updateReview(int reviewId, ReviewDto reviewDto) {
+        Review review = reviewRepository.findById(reviewId)
+            .orElseThrow(() -> new ReviewNotFoundException("Review with associate pokemon not found"));
+        
+        UserEntity userIdLog = authService.getAuthenticatedUserId();
 
-        Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new ReviewNotFoundException("Review with associate pokemon not found"));
-
-        if(review.getPokemon().getId() != pokemon.getId()) {
-            throw new ReviewNotFoundException("This review does not belong to a pokemon");
+        if (userIdLog.getId() != review.getUser().getId()) {
+            throw new RuntimeException("You not cant edit this reviews");
         }
 
         review.setTitle(reviewDto.getTitle());
@@ -78,13 +89,14 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public void deleteReview(int pokemonId, int reviewId) {
-        Pokemon pokemon = pokemonRepository.findById(pokemonId).orElseThrow(() -> new PokemonNotFoundException("Pokemon with associated review not found"));
+    public void deleteReview(int reviewId) {
+        Review review = reviewRepository.findById(reviewId)
+            .orElseThrow(() -> new ReviewNotFoundException("Review with associate pokemon not found"));
+        
+        UserEntity userIdLog = authService.getAuthenticatedUserId();
 
-        Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new ReviewNotFoundException("Review with associate pokemon not found"));
-
-        if(review.getPokemon().getId() != pokemon.getId()) {
-            throw new ReviewNotFoundException("This review does not belong to a pokemon");
+        if (userIdLog.getId() != review.getUser().getId()) {
+            throw new RuntimeException("You not cant delete this reviews");
         }
 
         reviewRepository.delete(review);
@@ -96,6 +108,7 @@ public class ReviewServiceImpl implements ReviewService {
         reviewDto.setTitle(review.getTitle());
         reviewDto.setContent(review.getContent());
         reviewDto.setStars(review.getStars());
+        reviewDto.setUserName(Optional.of(review.getUser().getUsername()));
         return reviewDto;
     }
 

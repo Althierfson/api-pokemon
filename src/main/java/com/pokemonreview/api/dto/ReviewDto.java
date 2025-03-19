@@ -1,5 +1,7 @@
 package com.pokemonreview.api.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,4 +16,5 @@ public class ReviewDto {
     private String title;
     private String content;
     private int stars;
+    private Optional<String> userName;
 }
